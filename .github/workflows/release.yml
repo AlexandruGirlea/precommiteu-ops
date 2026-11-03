@@ -1,0 +1,63 @@
+name: release
+
+on:
+  push:
+    tags: ["v*.*.*"]
+
+permissions: {}
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Tag matches the ops version and the CHANGELOG
+        run: >-
+          v="${GITHUB_REF_NAME#v}" &&
+          test "$(sed -n 's/^ *ops_version *= "\(.*\)"$/\1/p' terraform/main.tf)" = "$v" &&
+          grep -qxF "OPS_VERSION = \"$v\"" pulumi/runner.py &&
+          grep -qF "## [$v] - " CHANGELOG.md
+
+  image:
+    needs: verify
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Build and push the runner image
+        env:
+          ACTOR: ${{ github.actor }}
+          TOKEN: ${{ github.token }}
+        run: |
+          image="ghcr.io/alexandrugirlea/precommiteu-runner:${GITHUB_REF_NAME#v}"
+          echo "$TOKEN" | docker login ghcr.io -u "$ACTOR" --password-stdin
+          if docker manifest inspect "$image" >/dev/null 2>&1; then echo "::error::$image already exists"; exit 1; fi
+          docker build --platform linux/amd64 -t "$image" .
+          docker push "$image"
+
+  release:
+    needs: image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Create the GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          awk -v h="## [${GITHUB_REF_NAME#v}]" 'index($0, h) == 1 {f = 1; next} /^(## |\[)/ {f = 0} f' CHANGELOG.md > notes.md
+          gh release create "$GITHUB_REF_NAME" --title "$GITHUB_REF_NAME" --notes-file notes.md

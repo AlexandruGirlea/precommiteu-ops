@@ -1,0 +1,33 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: hashicorp/setup-terraform@v4
+      - run: pipx install ruff==0.15.16
+
+      - run: shellcheck entrypoint.sh
+      - run: terraform fmt -check terraform/ && terraform -chdir=terraform init -backend=false && terraform -chdir=terraform validate
+      - run: ruff check --line-length 82 --extend-select E501 pulumi/ && ruff format --check --line-length 82 pulumi/
+      - name: Versions are consistent
+        run: >-
+          ops=$(sed -n 's/^ *ops_version *= "\(.*\)"$/\1/p' terraform/main.tf) &&
+          scanner=$(sed -n 's/^ *scanner_version *= "\(.*\)"$/\1/p' terraform/main.tf) &&
+          models=$(sed -n 's/^ *models_revision *= "\(.*\)"$/\1/p' terraform/main.tf) &&
+          test "$(awk -F: '/^FROM /{print $NF}' Dockerfile)" = "$scanner" &&
+          grep -qxF "SCANNER_VERSION = \"$scanner\"" pulumi/runner.py &&
+          grep -qxF "MODELS_REVISION = \"$models\"" pulumi/runner.py &&
+          grep -qxF "OPS_VERSION = \"$ops\"" pulumi/runner.py &&
+          test "$(grep -m1 -o '^## \[[0-9][^]]*\]' CHANGELOG.md)" = "## [$ops]"
