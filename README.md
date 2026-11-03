@@ -1,8 +1,47 @@
-# precommitEU ops
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/AlexandruGirlea/precommiteu/main/docs/assets/img/bat-hero-dark.png">
+    <img src="https://raw.githubusercontent.com/AlexandruGirlea/precommiteu/main/docs/assets/img/bat-hero-light.png" alt="precommitEU" width="180" height="180">
+  </picture>
+</p>
 
-Run the [precommitEU](https://github.com/AlexandruGirlea/precommiteu) scanner
-on pull requests with a self-hosted GitHub Actions runner on Azure Container
-Apps, added from your Terraform or Pulumi code. It scales to zero when idle.
+<h1 align="center">precommitEU ops</h1>
+
+<p align="center">
+  <strong>Scan every pull request with precommitEU on your own Azure runner,
+  scaled to zero when idle.</strong>
+</p>
+
+<p align="center">
+  Add it from Terraform or Pulumi: a self-hosted GitHub Actions runner on Azure
+  Container Apps that reads the models from an Azure Files share.
+</p>
+
+<p align="center">
+  <a href="https://github.com/AlexandruGirlea/precommiteu-ops/releases/latest"><img src="https://img.shields.io/github/v/release/AlexandruGirlea/precommiteu-ops" alt="Latest release"></a>
+  <a href="https://github.com/AlexandruGirlea/precommiteu-ops/actions/workflows/ci.yml"><img src="https://github.com/AlexandruGirlea/precommiteu-ops/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/AlexandruGirlea/precommiteu-ops" alt="License"></a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/AlexandruGirlea/precommiteu"><strong>precommitEU</strong></a>
+  &nbsp;&middot;&nbsp;
+  <a href="#terraform">Terraform</a>
+  &nbsp;&middot;&nbsp;
+  <a href="#pulumi">Pulumi</a>
+  &nbsp;&middot;&nbsp;
+  <a href="https://huggingface.co/AlexandruGirlea/precommiteu-models">Model bundle</a>
+  &nbsp;&middot;&nbsp;
+  <a href="https://precommit.eu">precommit.eu</a>
+</p>
+
+```mermaid
+flowchart LR
+    pr[Pull request] --> job[Job queued for<br>the precommiteu label]
+    job -->|KEDA scaler| runner[One-job runner on<br>Azure Container Apps]
+    models[(Models on<br>Azure Files)] -->|read-only| runner
+    runner -->|check result| pr
+```
 
 ## What it creates
 
