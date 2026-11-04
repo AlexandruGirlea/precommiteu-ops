@@ -13,7 +13,7 @@ terraform {
 
 locals {
   ops_version     = "0.2.0"
-  scanner_version = "0.3.1"
+  scanner_version = "0.3.2"
   models_revision = "v0.3.0"
 }
 

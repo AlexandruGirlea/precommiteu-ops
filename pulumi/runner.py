@@ -6,7 +6,7 @@ import pulumi
 from pulumi_azure_native import app, resources, storage
 
 OPS_VERSION = "0.2.0"
-SCANNER_VERSION = "0.3.1"
+SCANNER_VERSION = "0.3.2"
 MODELS_REVISION = "v0.3.0"
 IMAGE = "ghcr.io/alexandrugirlea/precommiteu"
 

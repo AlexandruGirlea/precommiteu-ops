@@ -2,7 +2,7 @@ FROM ghcr.io/ggml-org/llama.cpp:server-cuda12@sha256:d5ffba7d096ab0236c65dc147d7
 
 LABEL org.opencontainers.image.source=https://github.com/AlexandruGirlea/precommiteu-ops
 
-ARG SCANNER_VERSION=0.3.1
+ARG SCANNER_VERSION=0.3.2
 ARG RUNNER_VERSION=2.338.2
 ARG RUNNER_SHA256=baebf204307bac6193480852732f0aba2ae97b6c5597c244f4d5558390147c40
 

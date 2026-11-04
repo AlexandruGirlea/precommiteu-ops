@@ -7,9 +7,12 @@ follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [0.2.0] - 2026-11-04
 
 Pull request scans now run on a serverless NVIDIA T4 GPU in your own Azure
-subscription. Our five-file test pull request took about 10 minutes from push
-to result, and 100 scans like it cost about $25–46 a month. Your code still
-never goes to an LLM provider.
+subscription. Our five-file test pull request took about 10.5 minutes from
+push to result. For 100 PRs averaging 1,000 changed lines across 10 files,
+budget about $52–60 a month at Sweden Central list prices, extrapolating
+12–15 minutes per PR and including CPU, RAM, GPU and the model share.
+See the README for assumptions and exclusions. Your code still never goes
+to an LLM provider.
 
 ### Changed
 
@@ -18,14 +21,16 @@ never goes to an LLM provider.
   dedicated CPU profile. On a CPU-only runner, four of the five `risky_code`
   fixture files timed out; on a T4 all five scan in about 4 minutes.
 - The runner image is built on llama.cpp's CUDA 12.8 server image and installs
-  scanner 0.3.1 from PyPI. It keeps the orchestrator's expert weights in RAM
+  scanner 0.3.2 from PyPI. It keeps the orchestrator's expert weights in RAM
   and gives the model servers 15 minutes to start.
 - The model download job runs on the same GPU profile.
 - Terraform creates the Container Apps environment with the `azapi` provider,
   because `azurerm` can't create serverless GPU profiles.
-- Ships scanner 0.3.1: runner image
+- Ships scanner 0.3.2: runner image
   `ghcr.io/alexandrugirlea/precommiteu-runner:0.2.0` and models revision
   `v0.3.0`.
+- Scanner 0.3.2 refreshes documentation and metadata; scanner logic, prompts
+  and model weights match the 0.3.1 build used in the Azure test above.
 
 ### Removed
 
