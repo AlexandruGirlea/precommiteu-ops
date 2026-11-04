@@ -73,3 +73,160 @@
     background-color: var(--c-off-white);
   }
 }
+
+.ops-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 190px;
+  align-items: center;
+  gap: 20px;
+  padding: 24px 0 32px;
+}
+
+.main-content .ops-hero h1 {
+  margin: 12px 0 20px;
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.035em;
+}
+
+.ops-eyebrow {
+  color: var(--c-reflex-blue);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.ops-lead {
+  font-size: 17px;
+  line-height: 1.65;
+}
+
+.ops-mascot {
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 10px 18px rgba(0, 51, 153, 0.14));
+  transform-origin: 50% 3%;
+  animation: ops-mascot-sway 5.6s ease-in-out infinite;
+}
+
+.ops-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 24px 0 16px;
+}
+
+.main-content .ops-actions .btn-primary {
+  color: #fff;
+  background: var(--c-reflex-blue);
+  box-shadow: none;
+
+  &:hover {
+    background: var(--c-reflex-blue-deep);
+  }
+}
+
+.ops-tags,
+.ops-evidence {
+  color: #59616e;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.ops-metrics,
+.ops-guides {
+  display: grid;
+  gap: 14px;
+  margin: 24px 0;
+}
+
+.ops-metrics {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.ops-guides {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.main-content .ops-metrics > a,
+.main-content .ops-guides > a {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
+  border: 1px solid var(--c-line);
+  border-radius: 10px;
+  background: #fff;
+  background-image: none;
+  text-decoration: none;
+
+  &:hover {
+    border-color: var(--c-reflex-blue);
+  }
+
+  &:focus-visible {
+    outline: 3px solid var(--c-reflex-blue);
+    outline-offset: 3px;
+  }
+
+  > span:last-child {
+    color: #59616e;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+}
+
+.main-content .ops-metrics > a {
+  border-top: 3px solid var(--c-eu-yellow);
+  background: var(--c-off-white);
+
+  strong {
+    font-size: 26px;
+    line-height: 1.2;
+    letter-spacing: -0.03em;
+  }
+}
+
+.ops-guide-number {
+  align-self: flex-start;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: var(--c-eu-yellow);
+  color: var(--c-reflex-blue-deep);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+@keyframes ops-mascot-sway {
+  0%, 100% { transform: rotate(-2.4deg); }
+  50% { transform: rotate(2.4deg); }
+}
+
+@media (max-width: 650px) {
+  .ops-hero {
+    grid-template-columns: 1fr;
+    gap: 0;
+    padding-top: 8px;
+  }
+
+  .ops-mascot {
+    grid-row: 1;
+    width: 150px;
+    justify-self: center;
+  }
+
+  .ops-metrics,
+  .ops-guides {
+    grid-template-columns: 1fr;
+  }
+
+  .main-content .ops-hero h1 {
+    font-size: 32px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ops-mascot { animation: none; }
+}

@@ -3,12 +3,39 @@ title: Overview
 nav_order: 1
 ---
 
-# precommitEU ops
+<section class="ops-hero" aria-labelledby="ops-title">
+  <div>
+    <p class="ops-eyebrow">precommitEU ops · Enterprise CI</p>
+    <h1 id="ops-title">Local AI.<br>Clearer compliance reviews.</h1>
+    <p class="ops-lead">Give your engineers an early review of EU regulatory
+      risks on every pull request. Run the scanner and its models inside
+      your own Azure subscription.</p>
+    <p class="ops-actions">
+      <a class="btn btn-primary" href="{{ '/deployment.html' | relative_url }}">Deploy for your team</a>
+      <a class="btn" href="{{ '/ci.html' | relative_url }}">Connect GitHub</a>
+    </p>
+    <p class="ops-tags">Apache-2.0 · Eight EU regulations · Local inference</p>
+  </div>
+  <img class="ops-mascot" src="{{ '/assets/img/bat.png' | relative_url }}"
+    alt="The precommitEU bat hanging from a code window" width="640" height="640">
+</section>
 
-Deploy local GenAI compliance scanning for your engineering organization.
-[precommitEU](https://github.com/AlexandruGirlea/precommiteu) reviews source
-code against eight EU regulations; ops puts that scanner into your private
-GitHub repositories using GPUs in your own Azure subscription.
+<div class="ops-metrics" aria-label="Evaluation results and estimates">
+  <a href="{{ '/performance.html#detection-quality' | relative_url }}">
+    <strong>95.5%</strong><span>Case-level precision in our evaluation</span>
+  </a>
+  <a href="{{ '/performance.html#cost-and-speed' | relative_url }}">
+    <strong>$52–60</strong><span>Estimated monthly cost for 100 PRs</span>
+  </a>
+  <a href="{{ '/performance.html#cost-and-speed' | relative_url }}">
+    <strong>12–15 min</strong><span>Estimated time per pull request</span>
+  </a>
+</div>
+
+<p class="ops-evidence">Quality was measured on 450 synthetic cases.
+  Cost and timing assume one regulation pack and roughly 10 changed files
+  per PR. <a href="{{ '/performance.html' | relative_url }}">Read the evidence,
+  assumptions and limitations.</a></p>
 
 ## From pull request to review
 
@@ -21,18 +48,33 @@ The scanner, weights and deployment code are Apache-2.0. There is no software
 subscription or LLM API fee; your organization provides the compute and
 controls its software and model versions.
 
-## Choose your next step
+## From evaluation to everyday use
 
-| Guide | What it covers |
-|---|---|
-| [Deploy](deployment.md) | Azure prerequisites, GitHub permissions, Terraform or Pulumi, model download |
-| [Connect CI](ci.md) | Copyable workflow, reports and required merge checks |
-| [Accuracy, cost and speed](performance.md) | Evaluation results, estimated spend and the measured Azure test |
-| [Operate](operations.md) | Infrastructure, network access, version pins, updates and security |
+<div class="ops-guides">
+  <a href="{{ '/deployment.html' | relative_url }}">
+    <span class="ops-guide-number">01</span>
+    <strong>Deploy your infrastructure</strong>
+    <span>Azure prerequisites, Terraform or Pulumi, and model setup.</span>
+  </a>
+  <a href="{{ '/ci.html' | relative_url }}">
+    <span class="ops-guide-number">02</span>
+    <strong>Connect your workflow</strong>
+    <span>GitHub Actions, downloadable reports and required merge checks.</span>
+  </a>
+  <a href="{{ '/performance.html' | relative_url }}">
+    <span class="ops-guide-number">03</span>
+    <strong>Evaluate quality and cost</strong>
+    <span>Measured results, estimated spend and the Azure deployment test.</span>
+  </a>
+  <a href="{{ '/operations.html' | relative_url }}">
+    <span class="ops-guide-number">04</span>
+    <strong>Operate with confidence</strong>
+    <span>Version control, network access, updates and runner security.</span>
+  </a>
+</div>
 
 The current deployment uses ops **0.2.0**, scanner **0.3.2** and models
-**v0.3.0**. Budget about **$52–60/month for 100 PRs** under the
-[documented assumptions](performance.md#cost-and-speed).
+**v0.3.0**.
 
 The scanner supports offline operation after installation. This deployment
 connects to GitHub for CI while running inference locally.
