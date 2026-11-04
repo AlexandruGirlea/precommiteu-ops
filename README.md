@@ -8,8 +8,8 @@
 <h1 align="center">precommitEU ops</h1>
 
 <p align="center">
-  <strong>Give every pull request an early EU compliance review.<br>
-  Keep the AI models and inference inside your organization.</strong>
+  <strong>AI compliance scanning. Your infrastructure. Your control.<br>
+  Review every pull request with models you run yourself.</strong>
 </p>
 
 <p align="center">
@@ -20,6 +20,8 @@
   <a href="#accuracy-and-cost">Accuracy and cost</a>
   &nbsp;&middot;&nbsp;
   <a href="https://github.com/AlexandruGirlea/precommiteu">Explore the scanner</a>
+  &nbsp;&middot;&nbsp;
+  <a href="https://alexandrugirlea.github.io/precommiteu/">Scanner docs</a>
 </p>
 
 <p align="center">

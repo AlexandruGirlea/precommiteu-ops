@@ -6,18 +6,18 @@ nav_order: 1
 <section class="ops-hero" aria-labelledby="ops-title">
   <div>
     <p class="ops-eyebrow">precommitEU ops · Enterprise CI</p>
-    <h1 id="ops-title">Local AI.<br>Clearer compliance reviews.</h1>
-    <p class="ops-lead">Give your engineers an early review of EU regulatory
-      risks on every pull request. Run the scanner and its models inside
-      your own Azure subscription.</p>
+    <h1 id="ops-title">AI scanning.<br>Your infrastructure.<br>Your control.</h1>
+    <p class="ops-lead">Review every pull request for EU regulatory risks
+      with AI you run yourself. Your code and models stay on your Azure
+      runner. No external LLM API.</p>
     <p class="ops-actions">
       <a class="btn btn-primary" href="{{ '/deployment.html' | relative_url }}">Deploy for your team</a>
       <a class="btn" href="{{ '/ci.html' | relative_url }}">Connect GitHub</a>
     </p>
-    <p class="ops-tags">Apache-2.0 · Eight EU regulations · Local inference</p>
+    <p class="ops-tags">Apache-2.0 · Eight EU regulations · Self-hosted AI</p>
   </div>
   <img class="ops-mascot" src="{{ '/assets/img/bat.png' | relative_url }}"
-    alt="The precommitEU bat hanging from a code window" width="640" height="640">
+    alt="The precommitEU bat surrounded by twelve EU stars" width="360" height="360">
 </section>
 
 <div class="ops-metrics" aria-label="Evaluation results and estimates">
@@ -76,8 +76,8 @@ controls its software and model versions.
 The current deployment uses ops **0.2.0**, scanner **0.3.2** and models
 **v0.3.0**.
 
-The scanner supports offline operation after installation. This deployment
-connects to GitHub for CI while running inference locally.
+The scanner can run **air-gapped after installation**. This CI deployment
+connects to GitHub while keeping AI inference on your own runner.
 See [network access](operations.md#network-access) for the boundary.
 
 ## The precommitEU projects
