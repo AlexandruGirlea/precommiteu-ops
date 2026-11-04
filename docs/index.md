@@ -6,10 +6,11 @@ nav_order: 1
 <section class="ops-hero" aria-labelledby="ops-title">
   <div>
     <p class="ops-eyebrow">precommitEU ops · Enterprise CI</p>
-    <h1 id="ops-title">AI scanning.<br>Your infrastructure.<br>Your control.</h1>
-    <p class="ops-lead">Review every pull request for EU regulatory risks
-      with AI you run yourself. Your code and models stay on your Azure
-      runner. No external LLM API.</p>
+    <h1 id="ops-title">Run your own AI.<br>On your infrastructure.<br>Under your control.</h1>
+    <p class="ops-lead">Run the supplied open-source models on your own
+      Azure runner to review every pull request for EU regulatory risks.
+      All AI inference stays on that runner; no external AI service or
+      API key is needed.</p>
     <p class="ops-actions">
       <a class="btn btn-primary" href="{{ '/deployment.html' | relative_url }}">Deploy for your team</a>
       <a class="btn" href="{{ '/ci.html' | relative_url }}">Connect GitHub</a>

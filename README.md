@@ -8,8 +8,8 @@
 <h1 align="center">precommitEU ops</h1>
 
 <p align="center">
-  <strong>AI compliance scanning. Your infrastructure. Your control.<br>
-  Review every pull request with models you run yourself.</strong>
+  <strong>Run your own AI for EU compliance scanning.<br>
+  On your infrastructure. Under your control.</strong>
 </p>
 
 <p align="center">
