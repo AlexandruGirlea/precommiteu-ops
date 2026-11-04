@@ -5,7 +5,7 @@ from typing import TypedDict
 import pulumi
 from pulumi_azure_native import app, resources, storage
 
-OPS_VERSION = "0.1.0"
+OPS_VERSION = "0.2.0"
 SCANNER_VERSION = "0.3.1"
 MODELS_REVISION = "v0.3.0"
 IMAGE = "ghcr.io/alexandrugirlea/precommiteu"
@@ -18,9 +18,6 @@ class RunnerArgs(TypedDict):
     github_repos: list[str]
     github_pat: pulumi.Input[str]
     regulations: list[str] | None
-    workload_profile_type: str | None
-    cpu: float | None
-    memory: str | None
 
 
 class Runner(pulumi.ComponentResource):
@@ -38,7 +35,8 @@ class Runner(pulumi.ComponentResource):
         location = args["location"]
         owner = args["github_owner"]
         regulations = args.get("regulations") or ["gdpr"]
-        profile = "precommiteu"
+        profile = "gpu"
+        gpu = app.ContainerResourcesArgs(cpu=8, memory="56Gi")
 
         rg_id = resources.get_resource_group_output(resource_group_name=rg).id
         account = storage.StorageAccount(
@@ -77,10 +75,7 @@ class Runner(pulumi.ComponentResource):
             workload_profiles=[
                 app.WorkloadProfileArgs(
                     name=profile,
-                    workload_profile_type=args.get("workload_profile_type")
-                    or "E8",
-                    minimum_count=0,
-                    maximum_count=len(args["github_repos"]),
+                    workload_profile_type="Consumption-GPU-NC8as-T4",
                 )
             ],
             opts=child,
@@ -152,7 +147,7 @@ class Runner(pulumi.ComponentResource):
                     "--local-dir",
                     "/models",
                 ],
-                resources=app.ContainerResourcesArgs(cpu=2, memory="4Gi"),
+                resources=gpu,
                 volume_mounts=[mount],
             ),
         )
@@ -196,10 +191,7 @@ class Runner(pulumi.ComponentResource):
                 app.ContainerArgs(
                     name="runner",
                     image=f"{IMAGE}-runner:{OPS_VERSION}",
-                    resources=app.ContainerResourcesArgs(
-                        cpu=args.get("cpu") or 6,
-                        memory=args.get("memory") or "32Gi",
-                    ),
+                    resources=gpu,
                     env=[
                         app.EnvironmentVarArgs(
                             name="GITHUB_PAT", secret_ref="github-pat"

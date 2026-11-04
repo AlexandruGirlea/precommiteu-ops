@@ -4,11 +4,15 @@ terraform {
       source  = "hashicorp/azurerm"
       version = "~> 5.0"
     }
+    azapi = {
+      source  = "Azure/azapi"
+      version = "~> 2.0"
+    }
   }
 }
 
 locals {
-  ops_version     = "0.1.0"
+  ops_version     = "0.2.0"
   scanner_version = "0.3.1"
   models_revision = "v0.3.0"
 }
@@ -39,21 +43,6 @@ variable "regulations" {
   default = ["gdpr"]
 }
 
-variable "workload_profile_type" {
-  type    = string
-  default = "E8"
-}
-
-variable "cpu" {
-  type    = number
-  default = 6
-}
-
-variable "memory" {
-  type    = string
-  default = "32Gi"
-}
-
 data "azurerm_resource_group" "this" {
   name = var.resource_group_name
 }
@@ -73,23 +62,28 @@ resource "azurerm_storage_share" "models" {
   quota              = 100
 }
 
-resource "azurerm_container_app_environment" "this" {
-  name                = "precommiteu"
-  resource_group_name = var.resource_group_name
-  location            = var.location
+# azurerm sends node counts for every workload profile, which serverless GPU
+# profiles reject.
+resource "azapi_resource" "environment" {
+  type      = "Microsoft.App/managedEnvironments@2025-07-01"
+  name      = "precommiteu"
+  parent_id = data.azurerm_resource_group.this.id
+  location  = var.location
 
-  workload_profile {
-    name                  = "precommiteu"
-    workload_profile_type = var.workload_profile_type
-    minimum_count         = 0
-    maximum_count         = length(var.github_repos)
+  body = {
+    properties = {
+      workloadProfiles = [
+        { name = "Consumption", workloadProfileType = "Consumption" },
+        { name = "gpu", workloadProfileType = "Consumption-GPU-NC8as-T4" },
+      ]
+    }
   }
 }
 
 resource "azurerm_container_app_environment_storage" "models" {
   for_each                     = toset(["ReadOnly", "ReadWrite"])
   name                         = "models-${lower(each.key)}"
-  container_app_environment_id = azurerm_container_app_environment.this.id
+  container_app_environment_id = azapi_resource.environment.id
   account_name                 = azurerm_storage_account.models.name
   share_name                   = azurerm_storage_share.models.name
   access_key                   = azurerm_storage_account.models.primary_access_key
@@ -100,8 +94,8 @@ resource "azurerm_container_app_job" "download" {
   name                         = "precommiteu-models"
   resource_group_name          = var.resource_group_name
   location                     = var.location
-  container_app_environment_id = azurerm_container_app_environment.this.id
-  workload_profile_name        = "precommiteu"
+  container_app_environment_id = azapi_resource.environment.id
+  workload_profile_name        = "gpu"
   replica_timeout_in_seconds   = 3600
 
   manual_trigger_config {
@@ -113,8 +107,8 @@ resource "azurerm_container_app_job" "download" {
     container {
       name   = "download"
       image  = "ghcr.io/alexandrugirlea/precommiteu:${local.scanner_version}"
-      cpu    = 2
-      memory = "4Gi"
+      cpu    = 8
+      memory = "56Gi"
       command = concat(
         ["hf", "download", "AlexandruGirlea/precommiteu-models", "base.gguf", "orchestrator.gguf"],
         [for r in var.regulations : "${r}/detector-adapter.gguf"],
@@ -140,8 +134,8 @@ resource "azurerm_container_app_job" "runner" {
   name                         = trimsuffix(substr(replace(lower("runner-${each.key}"), "/[^a-z0-9]+/", "-"), 0, 32), "-")
   resource_group_name          = var.resource_group_name
   location                     = var.location
-  container_app_environment_id = azurerm_container_app_environment.this.id
-  workload_profile_name        = "precommiteu"
+  container_app_environment_id = azapi_resource.environment.id
+  workload_profile_name        = "gpu"
   replica_timeout_in_seconds   = 7200
 
   secret {
@@ -179,8 +173,8 @@ resource "azurerm_container_app_job" "runner" {
     container {
       name   = "runner"
       image  = "ghcr.io/alexandrugirlea/precommiteu-runner:${local.ops_version}"
-      cpu    = var.cpu
-      memory = var.memory
+      cpu    = 8
+      memory = "56Gi"
 
       env {
         name        = "GITHUB_PAT"

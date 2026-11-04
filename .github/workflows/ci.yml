@@ -26,7 +26,7 @@ jobs:
           ops=$(sed -n 's/^ *ops_version *= "\(.*\)"$/\1/p' terraform/main.tf) &&
           scanner=$(sed -n 's/^ *scanner_version *= "\(.*\)"$/\1/p' terraform/main.tf) &&
           models=$(sed -n 's/^ *models_revision *= "\(.*\)"$/\1/p' terraform/main.tf) &&
-          test "$(awk -F: '/^FROM /{print $NF}' Dockerfile)" = "$scanner" &&
+          grep -qxF "ARG SCANNER_VERSION=$scanner" Dockerfile &&
           grep -qxF "SCANNER_VERSION = \"$scanner\"" pulumi/runner.py &&
           grep -qxF "MODELS_REVISION = \"$models\"" pulumi/runner.py &&
           grep -qxF "OPS_VERSION = \"$ops\"" pulumi/runner.py &&

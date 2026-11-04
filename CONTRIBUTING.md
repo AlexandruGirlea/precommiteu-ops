@@ -9,7 +9,7 @@ CI runs these from the repository root. Run them before opening a pull request
 shellcheck entrypoint.sh
 terraform fmt -check terraform/ && terraform -chdir=terraform init -backend=false && terraform -chdir=terraform validate
 ruff check --line-length 82 --extend-select E501 pulumi/ && ruff format --check --line-length 82 pulumi/
-ops=$(sed -n 's/^ *ops_version *= "\(.*\)"$/\1/p' terraform/main.tf) && scanner=$(sed -n 's/^ *scanner_version *= "\(.*\)"$/\1/p' terraform/main.tf) && models=$(sed -n 's/^ *models_revision *= "\(.*\)"$/\1/p' terraform/main.tf) && test "$(awk -F: '/^FROM /{print $NF}' Dockerfile)" = "$scanner" && grep -qxF "SCANNER_VERSION = \"$scanner\"" pulumi/runner.py && grep -qxF "MODELS_REVISION = \"$models\"" pulumi/runner.py && grep -qxF "OPS_VERSION = \"$ops\"" pulumi/runner.py && test "$(grep -m1 -o '^## \[[0-9][^]]*\]' CHANGELOG.md)" = "## [$ops]"
+ops=$(sed -n 's/^ *ops_version *= "\(.*\)"$/\1/p' terraform/main.tf) && scanner=$(sed -n 's/^ *scanner_version *= "\(.*\)"$/\1/p' terraform/main.tf) && models=$(sed -n 's/^ *models_revision *= "\(.*\)"$/\1/p' terraform/main.tf) && grep -qxF "ARG SCANNER_VERSION=$scanner" Dockerfile && grep -qxF "SCANNER_VERSION = \"$scanner\"" pulumi/runner.py && grep -qxF "MODELS_REVISION = \"$models\"" pulumi/runner.py && grep -qxF "OPS_VERSION = \"$ops\"" pulumi/runner.py && test "$(grep -m1 -o '^## \[[0-9][^]]*\]' CHANGELOG.md)" = "## [$ops]"
 ```
 
 The last command checks that the scanner version matches across the
@@ -31,8 +31,10 @@ Pulumi, and the ops version across Terraform, Pulumi and the top
 
 ## New scanner version
 
-Change the tag in the `Dockerfile` `FROM` line, `scanner_version` in
+Change `ARG SCANNER_VERSION` in the `Dockerfile`, `scanner_version` in
 `terraform/main.tf` and `SCANNER_VERSION` in `pulumi/runner.py`, then release a
-new ops version with a CHANGELOG entry naming the scanner version.
+new ops version with a CHANGELOG entry naming the scanner version. The image
+build fails if the scanner's model-server start limit can no longer be raised;
+update that `sed` line to match the new scanner.
 Update `models_revision` and `MODELS_REVISION` only when the model bundle
 changes; scanner-only releases can reuse the existing model revision.
