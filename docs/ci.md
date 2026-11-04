@@ -11,6 +11,7 @@ deployment.
 
 ## Workflow
 
+{% raw %}
 ```yaml
 name: compliance-scan
 on: pull_request
@@ -33,6 +34,7 @@ jobs:
             precommiteu.sarif
             precommiteu-summary.md
 ```
+{% endraw %}
 
 The runner image already provides the scanner, CUDA runtime and `/models`.
 Do not add a job `container:` block; that would replace this runtime.
